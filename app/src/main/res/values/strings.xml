@@ -21,7 +21,7 @@
 
     <!-- Label shown on launcher icon -->
     <!-- Label for the this application displayed on-screen when this application must be represented to the user. -->
-    <string name="app_label">Clock</string>
+    <string name="app_label">Clock9</string>
 
     <!-- Setting label on Set alarm screen: Label -->
     <string name="label">Label</string>
@@ -1068,5 +1068,12 @@
     [CHAR LIMIT=NONE]
     -->
     <string name="alarm_is_snoozed"><xliff:g id="alarm_time" example="14:20">%s</xliff:g> alarm snoozed for 10 minutes</string>
+    <string name="lk_screensaver_always_on">Persistent screensaver</string>
+    <string name="lk_screensaver_always_on_summary">Disable sleep while screensaver is active. WARNING: drains battery faster!</string>
+    <string name="lk_screensaver_use_custom_font">Use custom font</string>
+    <string name="lk_screensaver_use_custom_font_summary">Use a custom font.</string>
+    <string name="lk_screensaver_custom_font">Screensaver Clock Font</string>
+    <string name="lk_screensaver_custom_font_summary">Select custom desk clock font</string>
+    <string name="lk_screensaver_custom_font_default">serif</string>
 
 </resources>

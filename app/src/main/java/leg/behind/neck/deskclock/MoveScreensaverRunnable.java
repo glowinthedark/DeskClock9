@@ -105,11 +105,11 @@ public final class MoveScreensaverRunnable implements Runnable {
             // combat this, we position the mSaverView randomly within the smallest box that is
             // guaranteed to work.
             final int smallestDim = Math.min(mContentView.getWidth(), mContentView.getHeight());
-            final float newX = (smallestDim - mSaverView.getWidth()) / 2f;
-//            final float newX = getRandomPoint((smallestDim - mSaverView.getWidth()) / 4);
+//            final float newX = (smallestDim - mSaverView.getWidth()) / 2f;
+ //           final float newX = getRandomPoint((smallestDim - mSaverView.getWidth()));
             final float newY = getRandomPoint((smallestDim - mSaverView.getHeight()));
 
-//            mSaverView.setX(newX);
+ //           mSaverView.setX(newX);
             mSaverView.setY(newY);
             mActiveAnimator = getAlphaAnimator(mSaverView, 0f, 1f);
             mActiveAnimator.setDuration(0);
@@ -118,7 +118,7 @@ public final class MoveScreensaverRunnable implements Runnable {
         } else {
             // Select a new random position anywhere in mContentView that will fit mSaverView.
 //            final float newX = (mContentView.getWidth() - mSaverView.getWidth()) / 2f;
-//            final float newX = getRandomPoint((mContentView.getWidth() - mSaverView.getWidth()) /4);
+//            final float newX = getRandomPoint((mContentView.getWidth() - mSaverView.getWidth()));
             final float newY = getRandomPoint((mContentView.getHeight() - mSaverView.getHeight()));
 
             // Fade out and shrink the saver view.

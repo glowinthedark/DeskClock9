@@ -22,10 +22,12 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
+//import android.content.ContentProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+//import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -107,6 +109,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
 
     /** Intent used to deliver the {@link #ACTION_ON_DAY_CHANGE} callback. */
     private static final Intent DAY_CHANGE_INTENT = new Intent(ACTION_ON_DAY_CHANGE);
+//    private static Typeface typeface;
 
     @Override
     public void onEnabled(Context context) {
@@ -168,10 +171,19 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager wm, int[] widgetIds) {
         super.onUpdate(context, wm, widgetIds);
 
+//        setTypeface(context);
+
         for (int widgetId : widgetIds) {
             relayoutWidget(context, wm, widgetId, wm.getAppWidgetOptions(widgetId));
         }
     }
+
+//    private static void setTypeface(Context context) {
+//        // lk set custom font
+//        if (DataModel.getDataModel().isScreensaverCustomFont()) {
+//            typeface = Typeface.createFromAsset(context.getAssets(), "fonts/" + DataModel.getDataModel().getScreensaverCustomFont());
+//        }
+//    }
 
     /**
      * Called when the app widget changes sizes.
@@ -180,6 +192,8 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager wm, int widgetId,
             Bundle options) {
         super.onAppWidgetOptionsChanged(context, wm, widgetId, options);
+
+//        setTypeface(context);
 
         // scale the fonts of the clock to fit inside the new size
         relayoutWidget(context, AppWidgetManager.getInstance(context), widgetId, options);
@@ -194,6 +208,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
         final RemoteViews portrait = relayoutWidget(context, wm, widgetId, options, true);
         final RemoteViews landscape = relayoutWidget(context, wm, widgetId, options, false);
         final RemoteViews widget = new RemoteViews(landscape, portrait);
+
         wm.updateAppWidget(widgetId, widget);
         wm.notifyAppWidgetViewDataChanged(widgetId, R.id.world_city_list);
     }
@@ -297,6 +312,13 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
         // Configure the date to display the current date string.
         final CharSequence dateFormat = getDateFormat(context);
         final TextClock date = (TextClock) sizer.findViewById(R.id.date);
+//lk
+//        https://developer.android.com/guide/topics/ui/look-and-feel/fonts-in-xml
+//        if (DataModel.getDataModel().isScreensaverCustomFont()) {
+//            final TextClock clock = (TextClock) sizer.findViewById(R.id.clock);
+//            clock.setTypeface(typeface);
+//        }
+
         date.setFormat12Hour(dateFormat);
         date.setFormat24Hour(dateFormat);
 
@@ -402,6 +424,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
         // Configure the clock to display the widest time string.
         final TextClock date = (TextClock) sizer.findViewById(R.id.date);
         final TextClock clock = (TextClock) sizer.findViewById(R.id.clock);
+
         final TextView nextAlarm = (TextView) sizer.findViewById(R.id.nextAlarm);
         final TextView nextAlarmIcon = (TextView) sizer.findViewById(R.id.nextAlarmIcon);
 
@@ -409,6 +432,7 @@ public class DigitalAppWidgetProvider extends AppWidgetProvider {
         measuredSizes.setClockFontSizePx(clockFontSize);
         clock.setText(getLongestTimeString(clock));
         clock.setTextSize(COMPLEX_UNIT_PX, measuredSizes.mClockFontSizePx);
+
         date.setTextSize(COMPLEX_UNIT_PX, measuredSizes.mFontSizePx);
         nextAlarm.setTextSize(COMPLEX_UNIT_PX, measuredSizes.mFontSizePx);
         nextAlarmIcon.setTextSize(COMPLEX_UNIT_PX, measuredSizes.mIconFontSizePx);

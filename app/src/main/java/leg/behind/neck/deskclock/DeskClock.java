@@ -22,8 +22,10 @@ import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -58,6 +60,7 @@ import static android.support.v4.view.ViewPager.SCROLL_STATE_IDLE;
 import static android.support.v4.view.ViewPager.SCROLL_STATE_SETTLING;
 import static android.text.format.DateUtils.SECOND_IN_MILLIS;
 import static leg.behind.neck.deskclock.AnimatorUtils.getScaleAnimator;
+import static leg.behind.neck.deskclock.actionbarmenu.NightModeMenuItemController.MY_PERMISSIONS_REQUEST_WRITE_SETTINGS;
 
 /**
  * The main activity of the application which displays 4 different tabs contains alarms, world
@@ -66,66 +69,110 @@ import static leg.behind.neck.deskclock.AnimatorUtils.getScaleAnimator;
 public class DeskClock extends BaseActivity
         implements FabContainer, LabelDialogFragment.AlarmLabelDialogHandler {
 
-    /** Models the interesting state of display the {@link #mFab} button may inhabit. */
-    private enum FabState { SHOWING, HIDE_ARMED, HIDING }
+    /**
+     * Models the interesting state of display the {@link #mFab} button may inhabit.
+     */
+    private enum FabState {
+        SHOWING, HIDE_ARMED, HIDING
+    }
 
-    /** Coordinates handling of context menu items. */
+    /**
+     * Coordinates handling of context menu items.
+     */
     private final OptionsMenuManager mOptionsMenuManager = new OptionsMenuManager();
 
-    /** Shrinks the {@link #mFab}, {@link #mLeftButton} and {@link #mRightButton} to nothing. */
+    /**
+     * Shrinks the {@link #mFab}, {@link #mLeftButton} and {@link #mRightButton} to nothing.
+     */
     private final AnimatorSet mHideAnimation = new AnimatorSet();
 
-    /** Grows the {@link #mFab}, {@link #mLeftButton} and {@link #mRightButton} to natural sizes. */
+    /**
+     * Grows the {@link #mFab}, {@link #mLeftButton} and {@link #mRightButton} to natural sizes.
+     */
     private final AnimatorSet mShowAnimation = new AnimatorSet();
 
-    /** Hides, updates, and shows only the {@link #mFab}; the buttons are untouched. */
+    /**
+     * Hides, updates, and shows only the {@link #mFab}; the buttons are untouched.
+     */
     private final AnimatorSet mUpdateFabOnlyAnimation = new AnimatorSet();
 
-    /** Hides, updates, and shows only the {@link #mLeftButton} and {@link #mRightButton}. */
+    /**
+     * Hides, updates, and shows only the {@link #mLeftButton} and {@link #mRightButton}.
+     */
     private final AnimatorSet mUpdateButtonsOnlyAnimation = new AnimatorSet();
 
-    /** Automatically starts the {@link #mShowAnimation} after {@link #mHideAnimation} ends. */
+    /**
+     * Automatically starts the {@link #mShowAnimation} after {@link #mHideAnimation} ends.
+     */
     private final AnimatorListenerAdapter mAutoStartShowListener = new AutoStartShowListener();
 
-    /** Updates the user interface to reflect the selected tab from the backing model. */
+    /**
+     * Updates the user interface to reflect the selected tab from the backing model.
+     */
     private final TabListener mTabChangeWatcher = new TabChangeWatcher();
 
-    /** Shows/hides a snackbar explaining which setting is suppressing alarms from firing. */
+    /**
+     * Shows/hides a snackbar explaining which setting is suppressing alarms from firing.
+     */
     private final OnSilentSettingsListener mSilentSettingChangeWatcher =
             new SilentSettingChangeWatcher();
 
-    /** Displays a snackbar explaining why alarms may not fire or may fire silently. */
+    /**
+     * Displays a snackbar explaining why alarms may not fire or may fire silently.
+     */
     private Runnable mShowSilentSettingSnackbarRunnable;
 
-    /** The view to which snackbar items are anchored. */
+    /**
+     * The view to which snackbar items are anchored.
+     */
     private View mSnackbarAnchor;
 
-    /** The current display state of the {@link #mFab}. */
+    /**
+     * The current display state of the {@link #mFab}.
+     */
     private FabState mFabState = FabState.SHOWING;
 
-    /** The single floating-action button shared across all tabs in the user interface. */
+    /**
+     * The single floating-action button shared across all tabs in the user interface.
+     */
     private ImageView mFab;
 
-    /** The button left of the {@link #mFab} shared across all tabs in the user interface. */
+    /**
+     * The button left of the {@link #mFab} shared across all tabs in the user interface.
+     */
     private Button mLeftButton;
 
-    /** The button right of the {@link #mFab} shared across all tabs in the user interface. */
+    /**
+     * The button right of the {@link #mFab} shared across all tabs in the user interface.
+     */
     private Button mRightButton;
 
-    /** The controller that shows the drop shadow when content is not scrolled to the top. */
+    /**
+     * The controller that shows the drop shadow when content is not scrolled to the top.
+     */
     private DropShadowController mDropShadowController;
 
-    /** The ViewPager that pages through the fragments representing the content of the tabs. */
+    /**
+     * The ViewPager that pages through the fragments representing the content of the tabs.
+     */
     private ViewPager mFragmentTabPager;
 
-    /** Generates the fragments that are displayed by the {@link #mFragmentTabPager}. */
+    /**
+     * Generates the fragments that are displayed by the {@link #mFragmentTabPager}.
+     */
     private FragmentTabPagerAdapter mFragmentTabPagerAdapter;
 
-    /** The container that stores the tab headers. */
+    /**
+     * The container that stores the tab headers.
+     */
     private TabLayout mTabLayout;
 
-    /** {@code true} when a settings change necessitates recreating this activity. */
+    /**
+     * {@code true} when a settings change necessitates recreating this activity.
+     */
     private boolean mRecreateActivity;
+
+    public static int lastSaveAutoLockTimeout;
 
     @Override
     public void onNewIntent(Intent newIntent) {
@@ -179,8 +226,7 @@ public class DeskClock extends BaseActivity
                 tab.setText(labelResId);
                 tab.setCustomView(R.layout.tab_item);
 
-                @SuppressWarnings("ConstantConditions")
-                final TextView text = (TextView) tab.getCustomView()
+                @SuppressWarnings("ConstantConditions") final TextView text = (TextView) tab.getCustomView()
                         .findViewById(android.R.id.text1);
                 text.setTextColor(mTabLayout.getTabTextColors());
 
@@ -404,7 +450,7 @@ public class DeskClock extends BaseActivity
      */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return getSelectedDeskClockFragment().onKeyDown(keyCode,event)
+        return getSelectedDeskClockFragment().onKeyDown(keyCode, event)
                 || super.onKeyDown(keyCode, event);
     }
 
@@ -514,7 +560,9 @@ public class DeskClock extends BaseActivity
      */
     private final class PageChangeWatcher implements OnPageChangeListener {
 
-        /** The last reported page scroll state; used to detect exotic state changes. */
+        /**
+         * The last reported page scroll state; used to detect exotic state changes.
+         */
         private int mPriorState = SCROLL_STATE_IDLE;
 
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -647,7 +695,7 @@ public class DeskClock extends BaseActivity
     private final class TabChangeWatcher implements TabListener {
         @Override
         public void selectedTabChanged(UiDataModel.Tab oldSelectedTab,
-                UiDataModel.Tab newSelectedTab) {
+                                       UiDataModel.Tab newSelectedTab) {
             // Update the view pager and tab layout to agree with the model.
             updateCurrentTab();
 
@@ -676,5 +724,29 @@ public class DeskClock extends BaseActivity
                 updateFab(FAB_AND_BUTTONS_IMMEDIATE);
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_SETTINGS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+
+        // 1min
     }
 }

@@ -17,7 +17,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_label" msgid="6674495003718166674">"Reloj"</string>
+    <string name="app_label" msgid="6674495003718166674">"Reloj9"</string>
     <string name="label" msgid="162189613902857319">"Nombre"</string>
     <string name="default_label" msgid="5590025289805630372">"Alarma"</string>
     <string name="alarm_vibrate" msgid="3476686921490362230">"Vibrar"</string>
@@ -422,4 +422,7 @@
     <string name="pick_alarm_to_dismiss" msgid="5408769235866082896">"Indica la alarma que quieras ignorar"</string>
     <string name="no_firing_alarms" msgid="4986161963178722289">"No hay ninguna alarma activada"</string>
     <string name="alarm_is_snoozed" msgid="7044644119744928846">"Alarma de las <xliff:g id="ALARM_TIME">%s</xliff:g> pospuesta 10 minutos"</string>
+    <string name="lk_screensaver_always_on">Salvapantalla persistente</string>
+  <string name="lk_screensaver_always_on_summary">Deshabilitar el bloqueo de pantalla mientras el salvapantallas está activo. ADVERTENCIA: ¡agota la batería!</string>
+  <string name="lk_screensaver_use_custom_font">Usar fuente personalizada</string>
 </resources>

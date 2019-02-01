@@ -35,20 +35,26 @@
         <item name="colorPrimaryDark">#66000000</item>
         <item name="imageButtonStyle">@style/Widget.ImageButton</item>
         <item name="popupTheme">@style/ThemeOverlay.Popup</item>
+        <!--<item name="android:fontFamily">@font/frutiger</item>-->
+
+
     </style>
 
     <style name="Theme.DeskClock.Settings">
+        <!--<item name="android:fontFamily">@font/frutiger</item>-->
+
         <!-- Attributes from android.support.v7.appcompat -->
         <item name="actionBarStyle">@style/Widget.ActionBar</item>
         <item name="colorControlActivated">?attr/colorAccent</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-
+        <!--<item name="android:fontFamily">@font/frutiger</item>-->
         <!-- Attributes from android.support.v7.preference -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="Theme.DeskClock.RingtonePicker">
+        <!--<item name="android:fontFamily">@font/frutiger</item>-->
         <!-- Attributes from android.support.v7.appcompat -->
         <item name="actionBarStyle">@style/Widget.ActionBar</item>
         <item name="windowActionBar">true</item>
@@ -56,6 +62,7 @@
     </style>
 
     <style name="Theme.DeskClock.CitySelection">
+        <!--<item name="android:fontFamily">@font/frutiger</item>-->
         <!-- Attributes from android.support.v7.appcompat -->
         <item name="actionBarStyle">@style/Widget.ActionBar.NoTitle</item>
         <item name="windowActionBar">true</item>
@@ -68,6 +75,7 @@
     </style>
 
     <style name="ThemeOverlay.Popup" parent="ThemeOverlay.AppCompat">
+        <!--<item name="android:fontFamily">@font/frutiger</item>-->
         <item name="android:colorBackground">?attr/colorBackgroundFloating</item>
     </style>
 

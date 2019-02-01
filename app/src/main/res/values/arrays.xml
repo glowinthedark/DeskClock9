@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="lk_screensaver_custom_font_entries">
+        <!--<item>clockopia.ttf</item>-->
+        <!--<item>ChangaOne-Regular.ttf</item>-->
+        <!--<item>Copse-Regular.ttf</item>-->
+        <!--<item>DINPro.otf</item>-->
+        <!--<item>DINPro-Black.otf</item>-->
+        <!--<item>DINPro-Bold.otf</item>-->
+        <!--<item>DINPro-Light.otf</item>-->
+        <!--<item>DINPro-Medium.otf</item>-->
+        <!--<item>Frutiger-Bold-Condensed.ttf</item>-->
+        <!--<item>Frutiger_LT_87_xBlack_Cn.ttf</item>-->
+        <!--<item>FrutigerLTStd_BlackCn.otf</item>-->
+        <!--<item>Frutiger-LT-65-Bold.ttf</item>-->
+        <!--<item>Frutiger-LT-87-xBlack-Cn.ttf</item>-->
+        <!--<item>Frutiger_LT_75_Black.ttf</item>-->
+        <!--<item>FrutigerLTStd-BlackCn.otf</item>-->
+        <!--<item>Frutiger-Ultrablack.ttf</item>-->
+        <!--<item>Futura-Medium.ttf</item>-->
+        <!--<item>Glasgow-Bold.ttf</item>-->
+        <!--<item>Glasgow-Regular.ttf</item>-->
+        <!--<item>Graduate-Regular.ttf</item>-->
+        <!--<item>Iceland-Regular.ttf</item>-->
+        <!--<item>Lato-Regular.ttf</item>-->
+        <!--<item>OperatorMono-Bold.otf</item>-->
+        <!--<item>OperatorMono-Book.otf</item>-->
+        <!--<item>OperatorMono-Light.otf</item>-->
+        <!--<item>OperatorMono-Medium.otf</item>-->
+        <!--<item>Marvel-Regular.ttf</item>-->
+        <!--<item>Marvel-Bold.ttf</item>-->
+        <!--<item>TitilliumWeb-Bold.ttf</item>-->
+        <!--<item>TitilliumWeb-Light.ttf</item>-->
+        <!--<item>VarelaRound-Regular.ttf</item>-->
+        <item>default</item>
+        <item>default-bold</item>
+        <item>serif</item>
+        <item>sans-serif</item>
+        <item>monospace</item>
+    </string-array>
+
+    <string-array name="lk_screensaver_custom_font_values">
+
+    </string-array>
+</resources>

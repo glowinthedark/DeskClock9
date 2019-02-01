@@ -18,6 +18,7 @@ package leg.behind.neck.deskclock.settings;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -26,7 +27,9 @@ import android.support.v7.preference.ListPreferenceDialogFragmentCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceDialogFragmentCompat;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.SeekBarPreference;
 import android.support.v7.preference.TwoStatePreference;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +53,11 @@ public final class SettingsActivity extends BaseActivity {
 
     public static final String KEY_ALARM_SNOOZE = "snooze_duration";
     public static final String KEY_ALARM_CRESCENDO = "alarm_crescendo_duration";
+    public static final String KEY_LK_FONT_SIZE_LAND = "lk_font_size_land";
+    public static final String KEY_LK_FONT_SIZE_PORTRAIT = "lk_font_size_portrait";
+    public static final String KEY_LK_SCREENSAVER_ALWAYS_ON = "lk_screensaver_always_on";
+    public static final String KEY_LK_SCREENSAVER_USE_CUSTOM_FONT = "lk_screensaver_use_custom_font";
+    public static final String KEY_LK_SCREENSAVER_CUSTOM_FONT = "lk_screensaver_custom_font";
     public static final String KEY_TIMER_CRESCENDO = "timer_crescendo_duration";
     public static final String KEY_TIMER_RINGTONE = "timer_ringtone";
     public static final String KEY_TIMER_VIBRATE = "timer_vibrate";
@@ -141,6 +149,7 @@ public final class SettingsActivity extends BaseActivity {
                     .getSystemService(VIBRATOR_SERVICE)).hasVibrator();
             timerVibrate.setVisible(hasVibrator);
             loadTimeZoneList();
+            loadFontList(getContext().getAssets(), "fonts");
         }
 
         @Override
@@ -160,6 +169,14 @@ public final class SettingsActivity extends BaseActivity {
         @Override
         public boolean onPreferenceChange(Preference pref, Object newValue) {
             switch (pref.getKey()) {
+                case KEY_LK_FONT_SIZE_LAND:
+                    final SeekBarPreference seekBarPreference = (SeekBarPreference) pref;
+                    Log.d("LK__PPPref_dvg:", String.valueOf(seekBarPreference.getValue()));
+                    break;
+                case KEY_LK_SCREENSAVER_CUSTOM_FONT:
+                    final ListPreference listPreference = (ListPreference) pref;
+                    Log.d("pres:LK_custom_font_:", String.valueOf(listPreference.getValue()));
+                    break;
                 case KEY_ALARM_CRESCENDO:
                 case KEY_HOME_TZ:
                 case KEY_ALARM_SNOOZE:
@@ -258,6 +275,21 @@ public final class SettingsActivity extends BaseActivity {
             homeTimezonePref.setOnPreferenceChangeListener(this);
         }
 
+        /**
+         * Reconstruct the timezone list.
+         *
+         * @param assetManager {@link AssetManager}
+         * @param dir
+         */
+        private void loadFontList(AssetManager assetManager, String dir) {
+            final ListPreference customFontPref = (ListPreference) findPreference(KEY_LK_SCREENSAVER_CUSTOM_FONT);
+            String[] fontList = Utils.getFontList(assetManager, dir);
+            customFontPref.setEntryValues(fontList);
+            customFontPref.setEntries(fontList);
+            customFontPref.setSummary(customFontPref.getEntry());
+            customFontPref.setOnPreferenceChangeListener(this);
+        }
+
         private void refresh() {
             final ListPreference autoSilencePref =
                     (ListPreference) findPreference(KEY_AUTO_SILENCE);
@@ -290,6 +322,7 @@ public final class SettingsActivity extends BaseActivity {
             refreshListPreference((ListPreference) findPreference(KEY_ALARM_CRESCENDO));
             refreshListPreference((ListPreference) findPreference(KEY_TIMER_CRESCENDO));
             refreshListPreference((ListPreference) findPreference(KEY_ALARM_SNOOZE));
+            refreshListPreference((ListPreference) findPreference(KEY_LK_SCREENSAVER_CUSTOM_FONT));
 
             final Preference dateAndTimeSetting = findPreference(KEY_DATE_TIME);
             dateAndTimeSetting.setOnPreferenceClickListener(this);

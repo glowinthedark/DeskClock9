@@ -80,6 +80,26 @@ final class SettingsModel {
         return SettingsDAO.getDisplayClockSeconds(mPrefs);
     }
 
+    int getScreensaverLandscapeFontSize() {
+        return SettingsDAO.getLandscapeFontSize(mContext, mPrefs);
+    }
+
+    int getScreensaverPortraitFontSize() {
+        return SettingsDAO.getPortraitFontSize(mContext, mPrefs);
+    }
+
+    boolean isScreensaverAlwaysOn() {
+        return SettingsDAO.isScreensaverAlwaysOn(mContext, mPrefs);
+    }
+
+    boolean isScreensaverCustomFont() {
+        return SettingsDAO.isScreensaverCustomFont(mContext, mPrefs);
+    }
+
+    String getScreensaverCustomFont() {
+        return SettingsDAO.getScreensaverCustomFont(mContext, mPrefs);
+    }
+
     void setDisplayClockSeconds(boolean shouldDisplaySeconds) {
         SettingsDAO.setDisplayClockSeconds(mPrefs, shouldDisplaySeconds);
     }

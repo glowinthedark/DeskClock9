@@ -45,6 +45,7 @@
             android:paddingStart="24dp"
             android:layout_gravity="end"
             android:singleLine="true"
+            android:fontFamily="@font/frutiger"
             android:textAppearance="@style/world_clock_time"/>
 
         <leg.behind.neck.deskclock.AnalogClock

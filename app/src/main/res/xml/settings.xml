@@ -115,4 +115,56 @@
             android:title="@string/timer_vibrate_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Screensaver customizations">
+
+        <SeekBarPreference
+            android:defaultValue="100"
+            android:min="218"
+            android:max="300"
+            android:key="lk_font_size_land"
+            android:title="Screensaver landscape font size"
+            android:summary="Size of desk clock in landscape mode"
+            />
+
+        <SeekBarPreference
+            android:defaultValue="116"
+            android:min="10"
+            android:max="120"
+            android:key="lk_font_size_portrait"
+            android:title="Screensaver portrait font size"
+            android:summary="Size of desk clock in portrait mode"
+            />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="screensaver_night_mode"
+            android:summary="@string/night_mode_summary"
+            android:title="@string/night_mode_title" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="lk_screensaver_always_on"
+            android:summary="@string/lk_screensaver_always_on_summary"
+            android:title="@string/lk_screensaver_always_on" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="lk_screensaver_use_custom_font"
+            android:summary="@string/lk_screensaver_use_custom_font_summary"
+            android:title="@string/lk_screensaver_use_custom_font" />
+
+        <ListPreference
+            android:key="lk_screensaver_custom_font"
+            android:title="@string/lk_screensaver_custom_font"
+            android:summary="@string/lk_screensaver_custom_font_summary"
+            android:entries="@array/lk_screensaver_custom_font_entries"
+            android:entryValues="@array/lk_screensaver_custom_font_entries"
+            android:defaultValue="@string/lk_screensaver_custom_font_default"
+            />
+
+    </PreferenceCategory>
+
+    <!--TODO: add font picker: https://github.com/vanniktech/VNTFontListPreference-->
+
 </PreferenceScreen>

@@ -143,6 +143,7 @@ final class SettingsDAO {
      */
     static boolean getDisplayClockSeconds(SharedPreferences prefs) {
        return prefs.getBoolean(SettingsActivity.KEY_CLOCK_DISPLAY_SECONDS, false);
+
     }
 
     /**

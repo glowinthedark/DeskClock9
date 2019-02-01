@@ -20,15 +20,15 @@
     <style name="body">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/frutiger</item>
     </style>
 
     <style name="PrimaryLabelTextAppearance" parent="PrimaryLabelTextParentAppearance">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/frutiger</item>
     </style>
 
     <style name="SecondaryLabelTextAppearance" parent="SecondaryLabelTextParentAppearance">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/frutiger</item>
     </style>
 
 </resources>

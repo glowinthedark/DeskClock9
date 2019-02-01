@@ -999,6 +999,26 @@ public final class DataModel {
         return mSettingsModel.getScreensaverClockStyle();
     }
 
+    public int getScreensaverLandscapeFontSize() {
+        return mSettingsModel.getScreensaverLandscapeFontSize();
+    }
+
+    public int getScreensaverPortraitFontSize() {
+        return mSettingsModel.getScreensaverPortraitFontSize();
+    }
+
+    public boolean isScreensaverAlwaysOn() {
+        return mSettingsModel.isScreensaverAlwaysOn();
+    }
+
+    public boolean isScreensaverCustomFont() {
+        return mSettingsModel.isScreensaverCustomFont();
+    }
+
+    public String getScreensaverCustomFont() {
+        return mSettingsModel.getScreensaverCustomFont();
+    }
+
     /**
      * @return {@code true} if the screen saver should be dimmed for lower contrast at night
      */

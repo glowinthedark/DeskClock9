@@ -21,34 +21,64 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetManager;
 import android.database.ContentObserver;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.util.ArrayMap;
+import android.support.v4.util.SimpleArrayMap;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver.OnPreDrawListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextClock;
 
+import java.util.Map;
+
+import leg.behind.neck.deskclock.data.DataModel;
 import leg.behind.neck.deskclock.events.Events;
-import leg.behind.neck.deskclock.uidata.UiDataModel;
 
 import static android.content.Intent.ACTION_BATTERY_CHANGED;
-import static android.os.BatteryManager.EXTRA_PLUGGED;
 
 public class ScreensaverActivity extends BaseActivity {
 
     private static final LogUtils.Logger LOGGER = new LogUtils.Logger("ScreensaverActivity");
 
-    /** These flags keep the screen on if the device is plugged in. */
+    /**
+     * These flags keep the screen on if the device is plugged in.
+     */
     private static final int WINDOW_FLAGS = WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
             | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
             | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
             | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON;
 
     private final OnPreDrawListener mStartPositionUpdater = new StartPositionUpdater();
+
+    private static final ArrayMap<String, Typeface> fontCache = new ArrayMap<>();
+
+    private static Typeface getTypefaceByName(AssetManager assetManager, String fontName) {
+
+        if (builtinFonts.keySet().contains(fontName)) {
+            return builtinFonts.get(fontName);
+        }
+
+        if (fontCache.containsKey(fontName)) {
+            return fontCache.get(fontName);
+        } else {
+            Typeface face = Typeface.createFromAsset(assetManager, "fonts/" + fontName);
+            fontCache.put(fontName, face);
+            return face;
+        }
+    }
+
+//    private static SimpleArrayMap<String, Typeface> fonts = new SimpleArrayMap<>();
+
+//    private static Typeface defaultTypeface;
 
     private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -74,21 +104,21 @@ public class ScreensaverActivity extends BaseActivity {
 
     /* Register ContentObserver to see alarm changes for pre-L */
     private final ContentObserver mSettingsContentObserver = Utils.isPreL()
-        ? new ContentObserver(new Handler()) {
-            @Override
-            public void onChange(boolean selfChange) {
-                Utils.refreshAlarm(ScreensaverActivity.this, mContentView);
-            }
+            ? new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            Utils.refreshAlarm(ScreensaverActivity.this, mContentView);
         }
-        : null;
+    }
+            : null;
 
     // Runs every midnight or when the time changes and refreshes the date.
-    private final Runnable mMidnightUpdater = new Runnable() {
-        @Override
-        public void run() {
-//            Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mContentView);
-        }
-    };
+//    private final Runnable mMidnightUpdater = new Runnable() {
+//        @Override
+//        public void run() {
+////            Utils.updateDate(mDateFormat, mDateFormatForAccessibility, mContentView);
+//        }
+//    };
 
     private String mDateFormat;
     private String mDateFormatForAccessibility;
@@ -98,9 +128,38 @@ public class ScreensaverActivity extends BaseActivity {
 
     private MoveScreensaverRunnable mPositionUpdater;
 
+    public static final Map<String, Typeface> builtinFonts = new ArrayMap<>();
+
+    static {
+        builtinFonts.put("default", Typeface.DEFAULT);
+        builtinFonts.put("default-bold", Typeface.DEFAULT_BOLD);
+        builtinFonts.put("serif", Typeface.SERIF);
+        builtinFonts.put("sans-serif", Typeface.SANS_SERIF);
+        builtinFonts.put("monospace", Typeface.MONOSPACE);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        defaultTypeface = ResourcesCompat.getFont(this, R.font.frutiger);
+
+//        list assets from path
+//        getAssets().list("fonts")
+        //  String [] list = getAssets().list(path);
+//        R.font.class.getFields()[2].getName()
+//        typeface = ResourcesCompat.getFont(this, R.font.tangerine_regular)
+
+//        String[] fontNames = Utils.getFontList(getAssets(), "fonts");
+////        String[] fontNames = getResources().getStringArray(R.array.lk_screensaver_custom_font_entries);
+//
+//        for (String fontName : fontNames) {
+//            if (builtinFonts.keySet().contains(fontName)) {
+//                fonts.put(fontName, builtinFonts.get(fontName));
+//            } else {
+//                fonts.put(fontName, Typeface.createFromAsset(getAssets(), "fonts/"));
+//            }
+//        }
 
         mDateFormat = getString(R.string.abbrev_wday_month_day_no_year);
         mDateFormatForAccessibility = getString(R.string.full_wday_month_day_no_year);
@@ -116,9 +175,32 @@ public class ScreensaverActivity extends BaseActivity {
 //        Utils.setClockIconTypeface(mMainClockView);
         Utils.setTimeFormat((TextClock) digitalClock, false);
         Utils.setClockStyle(digitalClock, analogClock);
-        Utils.dimClockView(true, mMainClockView);
+
+        final boolean isDimNightMode = DataModel.getDataModel().getScreensaverNightModeOn();
+        Utils.dimClockView(isDimNightMode, mMainClockView);
         analogClock.enableSeconds(false);
 
+        int landscapeFontSize = Utils.isLandscape(this)
+                ? DataModel.getDataModel().getScreensaverLandscapeFontSize()
+                : DataModel.getDataModel().getScreensaverPortraitFontSize();
+
+        Log.d("::::LKLL:::", "fontSize=" + landscapeFontSize);
+        ((TextClock) digitalClock).setTextSize(landscapeFontSize);
+
+
+//        FONTS: https://stackoverflow.com/questions/19691530/valid-values-for-androidfontfamily-and-what-they-map-to
+        if (DataModel.getDataModel().isScreensaverCustomFont()) {
+            String fontName = DataModel.getDataModel().getScreensaverCustomFont();
+
+//            Typeface typeFace;
+//
+//            if (builtinFonts.keySet().contains(fontName)) {
+//                typeFace = builtinFonts.get(fontName);
+//            } else {
+//                typeFace = Typeface.createFromAsset(getAssets(), "fonts/" + fontName);
+//            }
+            ((TextClock) digitalClock).setTypeface(getTypefaceByName(getAssets(), fontName));
+        }
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_IMMERSIVE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -143,14 +225,14 @@ public class ScreensaverActivity extends BaseActivity {
         filter.addAction(Intent.ACTION_POWER_CONNECTED);
         filter.addAction(Intent.ACTION_POWER_DISCONNECTED);
         filter.addAction(Intent.ACTION_USER_PRESENT);
+
         if (Utils.isLOrLater()) {
             filter.addAction(AlarmManager.ACTION_NEXT_ALARM_CLOCK_CHANGED);
         }
         registerReceiver(mIntentReceiver, filter);
 
         if (mSettingsContentObserver != null) {
-            @SuppressWarnings("deprecation")
-            final Uri uri = Settings.System.getUriFor(Settings.System.NEXT_ALARM_FORMATTED);
+            @SuppressWarnings("deprecation") final Uri uri = Settings.System.getUriFor(Settings.System.NEXT_ALARM_FORMATTED);
             getContentResolver().registerContentObserver(uri, false, mSettingsContentObserver);
         }
     }
@@ -163,7 +245,7 @@ public class ScreensaverActivity extends BaseActivity {
         Utils.refreshAlarm(ScreensaverActivity.this, mContentView);
 
         startPositionUpdater();
-        UiDataModel.getUiDataModel().addMidnightCallback(mMidnightUpdater, 100);
+//        UiDataModel.getUiDataModel().addMidnightCallback(mMidnightUpdater, 100);
 
         final Intent intent = registerReceiver(null, new IntentFilter(ACTION_BATTERY_CHANGED));
         boolean pluggedIn = true;
@@ -174,7 +256,7 @@ public class ScreensaverActivity extends BaseActivity {
     @Override
     public void onPause() {
         super.onPause();
-        UiDataModel.getUiDataModel().removePeriodicCallback(mMidnightUpdater);
+//        UiDataModel.getUiDataModel().removePeriodicCallback(mMidnightUpdater);
         stopPositionUpdater();
     }
 
@@ -190,6 +272,7 @@ public class ScreensaverActivity extends BaseActivity {
     @Override
     public void onUserInteraction() {
         // We want the screen saver to exit upon user interaction.
+        restoreLockTimeout();
         finish();
     }
 
@@ -252,8 +335,16 @@ public class ScreensaverActivity extends BaseActivity {
             // When the user interacts with the screen, the navigation bar reappears
             if ((visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
                 // We want the screen saver to exit upon user interaction.
+                restoreLockTimeout();
                 finish();
             }
+        }
+    }
+
+    private void restoreLockTimeout() {
+        if (Settings.System.canWrite(getApplicationContext())) {
+            android.provider.Settings.System.putInt(getContentResolver(),
+                    Settings.System.SCREEN_OFF_TIMEOUT, DeskClock.lastSaveAutoLockTimeout);
         }
     }
 }

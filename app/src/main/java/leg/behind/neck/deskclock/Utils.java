@@ -25,6 +25,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -54,6 +55,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
 import android.util.ArraySet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextClock;
 import android.widget.TextView;
@@ -62,11 +64,16 @@ import leg.behind.neck.deskclock.data.DataModel;
 import leg.behind.neck.deskclock.provider.AlarmInstance;
 import leg.behind.neck.deskclock.uidata.UiDataModel;
 
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -83,6 +90,21 @@ public class Utils {
      * {@link Uri} signifying the "silent" ringtone.
      */
     public static final Uri RINGTONE_SILENT = Uri.EMPTY;
+
+    public static String[] getFontList(AssetManager assetManager, String path) {
+        String[] fontNames = new String[0];
+        try {
+            fontNames = assetManager.list(path);
+        } catch (IOException e) {
+            Log.e("::LK:", "ERROR_LK: failed getting font list");
+        }
+
+        List<String> fontList = new ArrayList<>(Arrays.asList(fontNames));
+        fontList.sort(String.CASE_INSENSITIVE_ORDER);
+        fontList.addAll(0, ScreensaverActivity.builtinFonts.keySet());
+
+        return fontList.toArray(new String[0]);
+    }
 
     public static void enforceMainLooper() {
         if (Looper.getMainLooper() != Looper.myLooper()) {
